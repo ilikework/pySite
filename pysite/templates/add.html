@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>增加记事</title>
+    <link rel="stylesheet" href="{{ static_url("style.css") }}" />
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/jquery.validate.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/localization/messages_zh.js") }}"></script>
+    <script>
+        $.validator.setDefaults({
+            submitHandler: function() {
+              alert("提交!");
+              form.submit();
+            }
+        });
+        $().ready(function() {
+            $("#commentForm").validate();
+        });
+    </script>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="main">
+            <form action="/add" method="post" id="steForm">
+                <label>名字:</label><br>
+                <input type="text" name="name" id="name" required /><br>
+                <label>内容:</label><br>
+                <textarea maxlength="4096" name="message" id="message" cols="40" rows="4" required></textarea><br>
+                <input type="submit" name="subMit" id="forSub" value="发布" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,402 @@
+﻿
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:active,a.visited {
+    color: #337ab7;
+}
+
+.rayui-btn, .rayui-input {
+    border: 1px solid #e2e2e2;
+    border-radius: 2px;
+    font-size: 14px;
+    display: inline-block;
+    margin: 5px 3px;
+    outline: none;
+}
+
+.rayui-input {
+    background-color: #fff;
+    padding: 4px 6px;
+}
+
+    .rayui-input:hover {
+        border-color: #D2D2D2;
+    }
+
+/* start 按钮组*/
+.rayui-btn {
+    padding: 3px 6px;
+    cursor: pointer;
+    text-align: center;
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .rayui-btn:hover {
+        opacity: .9;
+    }
+
+.rayui-btn-default:hover {
+    border-color: #009688;
+}
+
+.rayui-btn-primary {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.rayui-btn-success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.rayui-btn-info {
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #5bc0de;
+}
+
+.rayui-btn-warning {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+}
+
+.rayui-btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+/* end 按钮组*/
+
+
+
+.rayui-disabled {
+    color: #d2d2d2 !important;
+    cursor: not-allowed !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.blowout-left {
+    top: -10000px !important;
+    left: -10000px !important;
+}
+
+.blowout-right {
+    top: -10000px !important;
+    right: -10000px !important;
+}
+
+.active {
+    display: inherit;
+}
+
+.hiddenImp {
+    display: none !important;
+}
+
+/* start 排序图标*/
+.raytable-sort-span {
+    padding-left: 5px;
+}
+
+.raytable-sort {
+    display: inline-block;
+    border-style: solid;
+    position: relative;
+    cursor: pointer;
+    border-color: #888 transparent;
+}
+
+    .raytable-sort:hover {
+        border-color: #000 transparent;
+    }
+
+.raytable-asc {
+    top: -6px;
+    left: -10px;
+    border-width: 0 5px 5px 5px;
+}
+
+.raytable-desc {
+    top: 1px;
+    border-width: 5px 5px 0 5px;
+}
+
+th[sort-type="desc"] .raytable-desc, th[sort-type="asc"] .raytable-asc {
+    border-color: #000 transparent;
+}
+/* end 排序图标*/
+.raytable, .raytable-box {
+    position: relative;
+    border: 1px solid #e6e6e6;
+    color: #555;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+    .raytable, .raytable-box table {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        box-sizing: border-box;
+        border-spacing: 0;
+    }
+
+.raytable {
+    border-top: 1px solid #e6e6e6;
+    border-left: 1px solid #e6e6e6;
+}
+
+.raytable, .raytable-box .raytable-body {
+    background-color: #ffffff;
+}
+
+.raytable-head-boxmain, .raytable-head-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.raytable-body-box {
+    position: relative;
+    overflow-y: auto;
+}
+
+.raytable-head-boxmain, .raytable-head, .raytable > thead {
+    background-color: #f2f2f2;
+}
+
+/*固定列*/
+.raytable-box .raytable-fixed {
+    top: 0;
+    position: absolute;
+}
+
+.raytable-body-noscroll {
+    overflow: hidden;
+}
+
+.raytable-box .raytable-fixed-l {
+    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.08);
+}
+
+.raytable-box .raytable-fixed-r {
+    right: 0;
+    box-shadow: -1px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+.raytable-fixed-amend {
+    width: 50px;
+    height: 40px;
+    top: -1px;
+    position: absolute;
+    background-color: #f2f2f2;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+}
+/*数据*/
+.raytable-body-noscroll .raytable-body-box {
+    overflow-x: hidden;
+}
+
+.raytable > tbody > tr:hover, .raytable-body-box tr:hover, .raytable-tr-hover {
+    background-color: #f8f8f8;
+}
+
+.raytable-box tr.last td {
+    border-bottom: 0;
+}
+
+.raytable-box tr td.last, .raytable-box tr th.last {
+    border-right: 0;
+}
+
+.raytable th, .raytable td, .raytable-box th, .raytable-box td {
+    -moz-box-sizing: border-box; /*Firefox3.5+*/
+    -webkit-box-sizing: border-box; /*Safari3.2+*/
+    -o-box-sizing: border-box; /*Opera9.6*/
+    -ms-box-sizing: border-box; /*IE8*/
+    padding: 9px 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+    border: 0;
+    display: table-cell;
+    font-weight: normal;
+    border-right: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+}
+    .raytable-box td[islink] a{
+        color: #337ab7;
+    }
+
+    .raytable-box th.nowrap, .raytable-box td.nowrap {
+        padding: 0;
+        word-wrap: normal;
+        word-break: normal;
+    }
+
+.raytable-box th.nowrap div, .raytable-box td.nowrap div {
+    overflow: hidden;
+    display: block;
+    padding: 9px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.raytable-box[skin=none] th, .raytable-box[skin=none] td {
+    border: 0;
+}
+
+.raytable-box[skin=col] td {
+    border-bottom: 0;
+}
+
+.raytable-box[skin=row] th, .raytable-box[skin=row] td {
+    border-right: 0;
+}
+
+.raytable-box table[ray-even] tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.raytable-box th.hidden, .raytable-box td.hidden {
+    display: none;
+}
+
+.raytable-expand {
+    width: 16px;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+}
+
+.raytable-body-box tr[data-index] .raytable-expand:after {
+    content: '+'
+}
+
+.raytable-body-box tr[expand="1"] .raytable-expand:after {
+    content: '-'
+}
+/*分页样式*/
+.raytable-page-boxmain {
+    position: relative;
+    top: -1px;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    min-height: 25px;
+    font-size: 14px;
+    border-top: 1px solid #e6e6e6;
+}
+
+    .raytable-page-boxmain * {
+        vertical-align: middle;
+    }
+
+ul.raytable-page-pagination {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+    display: inline-block;
+}
+
+    ul.raytable-page-pagination li {
+        display: inline-block;
+        cursor: pointer;
+        list-style: none;
+        moz-user-select: -moz-none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        ul.raytable-page-pagination li:hover {
+            color: #009688;
+        }
+
+        ul.raytable-page-pagination li > a.page-item {
+            padding: 4px 8px;
+        }
+
+        ul.raytable-page-pagination li > a.page-active {
+            -ms-border-radius: 3px;
+            border-radius: 3px;
+            color: #fff;
+            background-color: #009688;
+        }
+
+.raytable-page-boxmain .raytable-page-input {
+    min-width: 30px;
+    width: 30px;
+    max-width: 80px;
+    text-align: center;
+}
+
+.raytable-page-boxmain .rayui-input:focus {
+    border-color: #009688 !important;
+}
+
+.raytable-page-boxmain .rayui-btn:hover {
+    border-color: #e2e2e2;
+}
+
+.raytable-loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: url("../images/loading.gif") no-repeat center center;
+}
+
+.raytable-msg {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+}
+
+.raytable-tips {
+    position: absolute;
+    border: 1px solid #e6e6e6;
+    box-shadow: -1px 0 8px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+}
+
+.raytable-tips-content {
+    overflow-y: scroll;
+    padding: 20px 10px;
+    max-height: 80px;
+}
+
+.raytable-tips-close {
+    display: block;
+    width: 24px;
+    height: 24px;
+    font-weight: normal;
+    position: absolute;
+    right: -3px;
+    top: -12px;
+    background: url("../images/close.png") no-repeat
+}
+
+    .raytable-tips-close:hover {
+        opacity: .8;
+    }

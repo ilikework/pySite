@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="{{ static_url("js/raytable/css/raytable.css") }}" />
+    <script src="{{ static_url("js/jquery-1.12.4.js") }}"></script>
+    <script src="{{ static_url("js/raytable/raytable.js") }}"></script>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="head">
+        我是head，我的高度是可变的，调整textarea大小，我就会换行，然后我就把table压扁，压得很扁很扁，我厉害不
+    </div>
+    <table id="table"></table>
+    <div class="footer">
+        我是footer，我的高度也是可变的，和head一样，调整textarea大小，我也会换行，然后我也把table压扁，我俩就喜欢欺负table，咋办吧
+    </div>
+    <script>
+
+        var data = [];
+        var now = new Date(2017, 10, 1);
+        var mm = now.getMinutes();
+
+        function getNowFormatDate(date) {
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = year +
+                seperator1 +
+                month +
+                seperator1 +
+                strDate +
+                " " +
+                date.getHours() +
+                seperator2 +
+                date.getMinutes() +
+                seperator2 +
+                date.getSeconds();
+            return currentdate;
+        }
+
+        for (var i = 1; i < 102; i++) {
+            now.setMinutes(mm + i);
+            var model = {
+                Id: i,
+                Subject: "我是Subject" + i,
+                Body: "我是body" + i,
+                Sex: "男",
+                Name: "我是name" + i,
+                Hobby: "我有很多爱好，打羽毛球，打篮球，打乒乓球，游泳，跑步，骑自行车，总之我要把这个表格撑大，撑大到换行",
+                CreateTime: getNowFormatDate(now)
+            }
+            data.push(model);
+        }
+
+        function initRayTable() {
+            var tableIns = $("#table").rayTable({
+                data: data,
+                height: 'sel-.footer-0',
+                cols: [[
+                    { field: 'Id', title: '编号', rowspan: 2 },
+                    { field: 'Name', title: '用户名', align: 'left' },
+                    { field: 'Subject', title: 'Subject', align: 'center', resize: true },
+                    { field: 'Body', title: 'Body' }
+                ]]
+            });
+        }
+
+        initRayTable();
+    </script>
+
+</body>
+</html>
