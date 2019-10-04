@@ -2,9 +2,82 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>记事一览</title>
+    <link rel="stylesheet" href="{{ static_url("js/raytable/css/raytable.css") }}" />
+    <script src="{{ static_url("js/jquery-1.12.4.js") }}"></script>
+    <script src="{{ static_url("js/raytable/raytable.js") }}"></script>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer {
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
+    <div class="head">
+         我的记事本
+    </div>
+    <div class="widget">
+        <button  name="add" id="btnAdd"  onclick="goAdd()" >新建记事</button><br/>
+    </div>
+    <table id="table"></table>
+    <div class="footer">
+        copyright iLikework 2019.10
+    </div>
+    <script>
+        function initRayTable() {
+            var text = {% raw notes %};
+            //var obj = JSON.parse(text);
+            //var myNotes =  $("#notes");
+            //var myNotes =  $("#notes").val();
+            //var myNotes2 =  decodeURIComponent("{{{notes}}}");
+            //var myNotes =  "{{notes}}";
+var text1 = [{'message': 'ab', 'name': 'a', 'id': 1, 'chgdate': '2019-10-01 22:39:40', 'rowno': 1}, {'message': 'ab', 'name': 'a', 'id': 2, 'chgdate': '2019-10-01 22:48:31', 'rowno': 2}, {'message': 'ab', 'name': 'a', 'id': 3, 'chgdate': '2019-10-01 22:48:57', 'rowno': 3}, {'message': 'ab', 'name': 'a', 'id': 4, 'chgdate': '2019-10-01 22:50:57', 'rowno': 4}, {'message': 'ab', 'name': 'a', 'id': 5, 'chgdate': '2019-10-01 22:51:01', 'rowno': 5}, {'message': 'ab', 'name': 'a', 'id': 6, 'chgdate': '2019-10-01 22:52:06', 'rowno': 6}];
+            var tableIns = $("#table").rayTable({
+                data: text, 
+                height:450,
+                page: true,
+                expandRow: true,
+                cols: [[
+                    { field: 'id', title: '', width: 0, resize: false },
+                    { field: 'rowno', title: '序号', width: 50, resize: true },
+                    { field: 'name', title: '记事名', align: 'left', resize: true },
+                    { field: 'message', title: '内容', align: 'center', width:200, resize: true },
+                    { field: 'chgdate', title: '更新时间', align: 'left', resize: true },
+                    { field: 'opts', title: '操作', width: 100, align: 'center', resize: true, formatter: function () {
+                            return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>&nbsp;<a class="rayui-btn rayui-btn-success" event="edit">编辑</a>';
+                        }
+                    }                    
+                ]]
+            });
+            
+            tableIns.on("tool", function (evt, obj) {
+                if (evt === "del") {
+                    if (window.confirm("确定删除[" + obj.data.name + "]吗？")) {
+                        $.getJSON("delete_note?", { id: obj.data.id }, function (data) {
+                            if (data.ret === 0)
+                                obj.del();
+                            else
+                                alert("删除失败");
+                        });
+                    }
+                } else if (evt === "edit") {
+                }
+            });
+        }
+        initRayTable();
+        
+        var goAdd = function() {
+           self.location="/add";
+        }
+        
+    </script>
 
 </body>
 </html>

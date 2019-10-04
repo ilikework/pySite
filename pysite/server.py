@@ -8,6 +8,7 @@ import tornado.web
 import sqlite3
 import os.path
 import datetime
+import json
 
 class dbEngine():
 
@@ -30,12 +31,17 @@ class dbEngine():
         db.close()
         return True
 
-    def selectNote():
+    def selectNote(self):
         db = sqlite3.connect('notes.db')
-        strsql = "select name,message,chgdate from note"
+        strsql = "select id, rowid as no, name,message,chgdate from note order by chgdate"
         cursor = db.execute(strsql)
+        notes = []
+        for row in cursor.fetchall():
+            note = {"id":row[0],"rowno":row[1],"name":row[2],"message":row[3],"chgdate":row[4]}
+            notes.append(note)
+        jsNote = tornado.escape.json_encode(notes)
         db.close()
-        return cursor
+        return notes 
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -62,7 +68,7 @@ class listNoteHandler(tornado.web.RequestHandler):
     def get(self):
         db = dbEngine()
         notes = db.selectNote()
-        self.render("list_note.html",notes=notes)
+        self.render("list_note.html",notes=notes,message="hello world")
 
 class testTableHandler(tornado.web.RequestHandler):
     def get(self):
@@ -81,5 +87,6 @@ application = tornado.web.Application(
 
 if __name__ == "__main__":
     application.listen(1888)
-    print("Server is up ...")
+    print("Server is up on port 1888...")
     tornado.ioloop.IOLoop.instance().start()
+
