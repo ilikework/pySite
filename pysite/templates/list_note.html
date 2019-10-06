@@ -44,7 +44,7 @@ var text1 = [{'message': 'ab', 'name': 'a', 'id': 1, 'chgdate': '2019-10-01 22:3
                 height: 'full-100',
                 page: true,
                 cols: [[
-                    { field: 'rowno', title: '序号', align: 'center', width: 50, resize: true },
+                    { field: 'no', title: '序号', align: 'center', width: 50, resize: true },
                     { field: 'name', title: '记事名', align: 'left', width:200, resize: true },
                     { field: 'message', title: '内容', align: 'left',  resize: true },
                     { field: 'chgdate', title: '更新时间', align: 'left',width:200, resize: true },
@@ -58,21 +58,23 @@ var text1 = [{'message': 'ab', 'name': 'a', 'id': 1, 'chgdate': '2019-10-01 22:3
             tableIns.on("tool", function (evt, obj) {
                 if (evt === "del") {
                     if (window.confirm("确定删除[" + obj.data.name + "]吗？")) {
-                        $.getJSON("delete_note?", { id: obj.data.id }, function (data) {
-                            if (data.ret === 0)
-                                obj.del();
-                            else
+                        $.post("delete_note?id="+obj.data.id, function (data) {
+                            if (data != 0)
                                 alert("删除失败");
+                            else {
+                                window.location.reload();
+                            }
                         });
                     }
                 } else if (evt === "edit") {
+                     self.location="/edit_note?id="+obj.data.id;
                 }
             });
         }
         initRayTable();
         
         var goAdd = function() {
-           self.location="/add";
+           self.location="/add_note";
         }
         
     </script>

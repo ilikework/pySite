@@ -10,12 +10,14 @@
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <LaunchProvider>Web launcher</LaunchProvider>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
     <WebBrowserUrl>http://localhost</WebBrowserUrl>
     <OutputPath>.</OutputPath>
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>pysite</Name>
     <RootNamespace>pysite</RootNamespace>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <CommandLineArguments>-p 1008</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +37,8 @@
     <Folder Include="static\js\" />
     <Folder Include="static\js\raytable\" />
     <Folder Include="static\js\raytable\css\" />
+    <Folder Include="static\plugins\" />
+    <Folder Include="static\plugins\raytable\" />
     <Folder Include="static\plugins\raytable\images\" />
     <Folder Include="templates\" />
   </ItemGroup>
@@ -45,10 +49,11 @@
     <Content Include="static\plugins\raytable\images\loading.gif" />
     <Content Include="static\plugins\raytable\raytable.js" />
     <Content Include="static\style.css" />
-    <Content Include="templates\add.html" />
+    <Content Include="templates\add_note.html" />
     <Content Include="templates\add_success.html" />
+    <Content Include="templates\edit_note.html" />
     <Content Include="templates\list_note.html" />
-    <Content Include="templates\raytableSelDemo.html" />
+    <Content Include="templates\test_tts.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 

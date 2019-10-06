@@ -2,6 +2,7 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import sys, getopt
 import os
 import tornado.ioloop
 import tornado.web
@@ -31,22 +32,53 @@ class dbEngine():
         db.close()
         return True
 
+    def updateNote(self,id,name,message):
+        db = sqlite3.connect('notes.db')
+        strsql = "update note set name='{}', message='{}', chgdate = '{}' where id = {}".format(name,message,datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),id)
+        db.execute(strsql)
+        db.commit()
+        db.close()
+        return True
+
+    def delNote(self,id):
+        db = sqlite3.connect('notes.db')
+        strsql = "delete from note where id = {}".format(id)
+        db.execute(strsql)
+        db.commit()
+        db.close()
+        return True
+
     def selectNote(self):
         db = sqlite3.connect('notes.db')
-        strsql = "select id, rowid as no, name,message,chgdate from note order by chgdate"
+        strsql = "select id, name,message,chgdate from note order by chgdate"
         cursor = db.execute(strsql)
         notes = []
+        i = 0
         for row in cursor.fetchall():
-            note = {"id":row[0],"rowno":row[1],"name":row[2],"message":row[3],"chgdate":row[4]}
+            i +=1
+            note = {"id":row[0],"no":str(i),"name":row[1],"message":row[2],"chgdate":row[3]}
             notes.append(note)
         jsNote = tornado.escape.json_encode(notes)
         db.close()
         return notes 
 
+    def selectOneNote(self,id):
+        db = sqlite3.connect('notes.db')
+        strsql = "select name,message from note where id = {} ".format(id)
+        cursor = db.execute(strsql)
+        name =''
+        message =''
+        for row in cursor.fetchall():
+            name = row[0]
+            message = row[1]
+        db.close()
+        return name,message 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html")
+        db = dbEngine()
+        notes = db.selectNote()
+        self.render("list_note.html",notes=notes)
 
         #self.render("result.html",
         #            len_body = len_body
@@ -54,7 +86,7 @@ class MainHandler(tornado.web.RequestHandler):
 
 class addNoteHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("add.html")
+        self.render("add_note.html")
 
     def post(self):
         name = self.get_argument('name')
@@ -64,29 +96,77 @@ class addNoteHandler(tornado.web.RequestHandler):
         if db.addNote(name,message):
             self.render("add_success.html")
 
+class editNoteHandler(tornado.web.RequestHandler):
+    def get(self):
+        id = self.get_argument('id')
+        db = dbEngine()
+        name,message = db.selectOneNote(id)
+        self.render("edit_note.html",id=id,name=name,message=message)
+
+    def post(self):
+        id = self.get_argument('id')
+        name = self.get_argument('name')
+        message = self.get_argument('message')
+        db =dbEngine()
+        if db.updateNote(id,name,message):
+            notes = db.selectNote()
+            self.render("list_note.html",notes=notes)
+
+class delNoteHandler(tornado.web.RequestHandler):
+
+    def post(self):
+        id = self.get_argument('id')
+
+        db = dbEngine()
+        if db.delNote(id):
+            self.write("0")
+
 class listNoteHandler(tornado.web.RequestHandler):
     def get(self):
         db = dbEngine()
         notes = db.selectNote()
-        self.render("list_note.html",notes=notes,message="hello world")
+        self.render("list_note.html",notes=notes)
 
 class testTableHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("raytableSelDemo.html")
 
+class testTTSHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("test_tts.html")
+
 application = tornado.web.Application(
     [
-    (r"/", MainHandler),
-    (r"/add", addNoteHandler),
+    (r"/", listNoteHandler),
     (r"/note", listNoteHandler),
-    (r"/testTable", testTableHandler)
+    (r"/add_note", addNoteHandler),
+    (r"/edit_note", editNoteHandler),
+    (r"/delete_note", delNoteHandler),
+    (r"/testTable", testTableHandler),
+    (r"/testTTS", testTTSHandler)
     ],
     template_path=os.path.join(os.getcwd(),  "templates"),
     static_path=os.path.join(os.getcwd(),  "static"),
 )
 
-if __name__ == "__main__":
-    application.listen(1888)
-    print("Server is up on port 1888...")
+def main(argv):
+    port = 1888;
+    try:
+      opts, args = getopt.getopt(argv,"hp:",["port="])
+    except getopt.GetoptError:
+      print("server.py -p <port>")
+      sys.exit(2)
+    for opt, arg in opts:
+      if opt == '-h':
+         print("server.py -p <port>")
+         sys.exit()
+      elif opt in ("-p", "--port"):
+         port = arg
+
+    application.listen(port)
+    print("Server is up on port {}...".format(port))
     tornado.ioloop.IOLoop.instance().start()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
 

@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>增加记事</title>
+    <link rel="stylesheet" href="{{ static_url("style.css") }}" />
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/jquery.validate.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/localization/messages_zh.js") }}"></script>
+    <script>
+        $.validator.setDefaults({
+            submitHandler: function() {
+              alert("提交!");
+              form.submit();
+            }
+        });
+        $().ready(function() {
+            $("#commentForm").validate();
+        });
+    </script>
+    <style>
+        .container { 
+            height: 300px;
+            position: relative;
+         }
+         .vertical-center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+           transform: translateY(-50%);
+        }
+        #form
+        {
+            width:800px;
+            margin:0 auto;
+            vertical-align:middle
+            /*text-align:center;*/
+        }
+        #name
+        {
+            width:50%; 
+        }
+        #message
+        {
+            width:100%; /* 为什么textarea的宽度要宽于bk的宽度，如何让它正好占满bk的宽度？？？ */
+            height:100px;
+        }
+        .label
+        {
+             text-align:left;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+     <div class="container">
+         <div class="vertical-center">   
+           <form action="/add_note" method="post" id="form">
+                <label class="label">名字:</label><br>
+                <input type="text" name="name" id="name" required /><br>
+                <label class="label">内容:</label><br>
+                <textarea maxlength="4096" name="message" id="message" cols="40" rows="4" required></textarea><br>
+                <div align="center">
+                     <input type="submit" name="subMit" id="forSub" value="发布" />
+                </div>
+          </form>
+       </div>
+     </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+  <script
+    type="text/javascript"
+    src="//code.jquery.com/jquery-2.1.3.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <link rel="stylesheet" type="text/css" href="https://rawgit.com/Hagsten/Talkify/master/styles/talkify-playlist.css">
+      <link rel="stylesheet" type="text/css" href="https://rawgit.com/Hagsten/Talkify/master/styles/talkify-common.css">
+      <link rel="stylesheet" type="text/css" href="https://rawgit.com/Hagsten/Talkify/master/styles/talkify-audiocontrols.css">
+      <script type="text/javascript" src="https://rawgit.com/Hagsten/Talkify/master/dist/talkify.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.min.css">
+
+  <style id="compiled-css" type="text/css">
+      .talkify-audio-control {
+  color: white;
+}
+
+.fa-2x {
+  font-size: 20px !important;
+}
+
+  </style>
+</head>
+<body>
+    <script>
+        talkify.config.remoteService.host = 'https://talkify.net';
+        talkify.config.remoteService.apiKey = '12a2729f-f2f0-42db-a84d-595accfbbc00';
+
+        talkify.config.ui.audioControls = {
+          enabled: true, //<-- Disable to get the browser built in audio controls
+          container: document.getElementById("player-and-voices")
+        };
+
+        $(document).ready(function() {
+          var player = new talkify.TtsPlayer()
+            .enableTextHighlighting();
+
+          var playlist = new talkify.playlist()
+            .begin()
+            .usingPlayer(player)
+            .withRootSelector('#root')
+            .withTextInteraction()
+            .build()
+            .play();
+        });
+
+    </script>
+    <section id="root">
+        <h3>
+            This demo will load automatically, be patient.
+        </h3>
+        <p>
+            Hi, this is a short demo of the Talkify library. Let me describe some of my features.
+        </p>
+     </section>
+</body>
+</html>
