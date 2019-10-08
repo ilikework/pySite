@@ -135,6 +135,10 @@ class testTTSHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("test_tts.html")
 
+class stockHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("stock.html")
+
 application = tornado.web.Application(
     [
     (r"/", listNoteHandler),
@@ -143,7 +147,8 @@ application = tornado.web.Application(
     (r"/edit_note", editNoteHandler),
     (r"/delete_note", delNoteHandler),
     (r"/testTable", testTableHandler),
-    (r"/testTTS", testTTSHandler)
+    (r"/testTTS", testTTSHandler),
+    (r"/stock", stockHandler)
     ],
     template_path=os.path.join(os.getcwd(),  "templates"),
     static_path=os.path.join(os.getcwd(),  "static"),
