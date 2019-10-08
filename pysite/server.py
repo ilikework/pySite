@@ -10,6 +10,7 @@ import sqlite3
 import os.path
 import datetime
 import json
+from py.Stock import Stock
 
 class dbEngine():
 
@@ -58,7 +59,6 @@ class dbEngine():
             i +=1
             note = {"id":row[0],"no":str(i),"name":row[1],"message":row[2],"chgdate":row[3]}
             notes.append(note)
-        jsNote = tornado.escape.json_encode(notes)
         db.close()
         return notes 
 
@@ -137,7 +137,10 @@ class testTTSHandler(tornado.web.RequestHandler):
 
 class stockHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("stock.html")
+        stock_api = Stock()
+        stocks = stock_api.get_stock_info()
+        print(stocks)
+        self.render("stock.html",stocks=stocks)
 
 application = tornado.web.Application(
     [

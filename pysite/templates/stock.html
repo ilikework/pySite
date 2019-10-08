@@ -1,67 +1,108 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>stock kanban</title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="googlebot" content="noindex, nofollow">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.8/vue.min.js"></script>
-  <script type="text/javascript" src="https://rawgit.com/matfish2/vue-tables-2/master/dist/vue-tables-2.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <style id="compiled-css" type="text/css"></style>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>stock kanban</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.4/vue.min.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/matfish2/vue-tables/master/dist/vue-tables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-  <script type="text/javascript">
-    window.onload=function(){
-        Vue.use(VueTables.ClientTable);
-        new Vue({
-                  el: "#app",
-                  data: {
+    <style id="compiled-css" type="text/css">
+        #app {
+            text-align: center;
+        }
+
+        table {
+            text-align: left;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        thead tr:nth-child(2) th {
+            font-weight: normal;
+        }
+
+        .VueTables__sortable {
+            cursor: pointer;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        window.onload = function () {
+            //Vue.use(VueTables.ClientTable);
+            Vue.use(VueTables.client, {
+              perPage: 25
+            })
+
+            new Vue({
+                el: "#app",
+                data: {
                     columns: [
-                      'no',
-                      'name',
-                      'price',
-                      'rise',
-                      'rise_persent',
-                      'amount',
-                      'sum'
+                        'no',
+                        'name',
+                        'price',
+                        'rise',
+                        'rise_persent',
+                        'amount',
+                        'sum'
                     ],
                     data: getData(),
                     options: {
-                      headings: {
-                      no:'No.',
-                      name:'name',
-                      price:'当前价格',
-                      rise:'涨跌',
-                      rise_persent:'涨跌幅',
-                      amount:'成交量',
-                      sum:'成交金额(万)'
-                      },
-                      sortable: [
-                        'No.', 'name'
-                      ],
-                      texts: {
-                        filterPlaceholder: 'searching'
-                      }
-                    }
-                  }
-                });
+                        headings: {
+                            no: 'No.',
+                            name: 'name',
+                            price: '当前价格',
+                            rise: '涨跌',
+                            rise_persent: '涨跌幅',
+                            amount: '成交量',
+                            sum: '成交金额(万)'
+                        },
+                        sortable: [
+                            'No.', 'name'
+                        ],
+                        texts: {
+                            filterPlaceholder: 'searching'
+                        }
 
-        function getData() {
-            var arr = {% raw stocks %};
-	    return arr;
+                    }
+                }
+            });
+
+            function getData() {
+                var arr = {% raw stocks %};
+            return arr;
         }
-    }
+                    }
     </script>
 </head>
 <body>
     <h3 class="vue-title">my stocks</h3>
-<div id="app">
-  <v-client-table :columns="columns" :data="data" :options="options">
-  </v-client-table>
-</div>
+    <div id="app" class="container">
+        <v-client-table :columns="columns" :data="data" :options="options">
+            <div slot="beforeBody">
+                before body
+            </div>
+        </v-client-table>
+    </div>
+    <script>
+        // tell the embed parent frame the height of the content
+        if (window.parent && window.parent.parent) {
+            window.parent.parent.postMessage(["resultsFrame", {
+                height: document.body.getBoundingClientRect().height,
+                slug: "823jzuzc"
+            }], "*")
+        }
+
+        // always overwrite window.name, in case users try to set it manually
+        window.name = "result"
+    </script>
 </body>
 </html>
 
