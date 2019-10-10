@@ -1,109 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
     <title>stock kanban</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.4/vue.min.js"></script>
-    <script type="text/javascript" src="https://rawgit.com/matfish2/vue-tables/master/dist/vue-tables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-
-    <style id="compiled-css" type="text/css">
-        #app {
-            text-align: center;
+    <link rel="stylesheet" href="{{ static_url("js/raytable/css/raytable.css") }}" />
+    <script src="{{ static_url("js/jquery-1.12.4.js") }}"></script>
+    <script src="{{ static_url("js/raytable/raytable.js") }}"></script>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
         }
 
-        table {
-            text-align: left;
-        }
-
-        h2 {
-            margin-bottom: 10px;
-        }
-
-        thead tr:nth-child(2) th {
-            font-weight: normal;
-        }
-
-        .VueTables__sortable {
-            cursor: pointer;
+        .footer {
+            font-size: 16px;
         }
     </style>
-
-
-    <script type="text/javascript">
-        window.onload = function () {
-            //Vue.use(VueTables.ClientTable);
-            Vue.use(VueTables.client, {
-              perPage: 25
-            })
-
-            new Vue({
-                el: "#app",
-                data: {
-                    columns: [
-                        'no',
-                        'name',
-                        'price',
-                        'rise',
-                        'rise_persent',
-                        'amount',
-                        'sum'
-                    ],
-                    data: getData(),
-                    options: {
-                        headings: {
-                            no: 'No.',
-                            name: 'name',
-                            price: '当前价格',
-                            rise: '涨跌',
-                            rise_persent: '涨跌幅',
-                            amount: '成交量',
-                            sum: '成交金额(万)'
-                        },
-                        sortable: [
-                            'No.', 'name'
-                        ],
-                        texts: {
-                            filterPlaceholder: 'searching'
+</head>
+<body>
+     <div class="head">
+         股票看板
+    </div>
+    <form action="/add_stock" method="post" id="form">
+        <label class="label">股票代码:</label>
+        <input type="text" name="code" id="code" required />
+        <button  name="add" id="btnAdd"  onclick="goAdd()" >添加关注</button><br/>
+    </form>
+    <table id="table"></table>
+    <div class="footer">
+        copyright iLikework 2019.10
+    </div>
+    <script>
+        function initRayTable() {
+            var text = {% raw stocks %};
+            var tableIns = $("#table").rayTable({
+                data: text, 
+                height: 'full-60',
+                //page: true,
+                page: {limit : 25},
+                cols: [[
+                    { field: 'no', title: 'No.', align: 'center', sort:true, width: 50, resize: true },
+                    { field: 'name', title: 'Name', align: 'left', sort:true, width:100, resize: true },
+                    { field: 'price', title: '当前价格', align: 'left', sort:true, width:100,  resize: true },
+                    { field: 'rise', title: '涨跌', align: 'left', sort:true, width:100, resize: true },
+                    { field: 'rise_persent', title: '涨跌幅', align: 'left', sort:true, width:100, resize: true },
+                    { field: 'amount', title: '成交量', align: 'left', sort:true, width:100, resize: true },
+                    { field: 'sum', title: '成交金额(万)', align: 'left', sort:true, width:100, resize: true },
+                    { field: 'opts', title: '操作', width: 60, align: 'center', resize: true, formatter: function () {
+                            return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>';
                         }
-
+                    }                    
+                ]]
+            });
+            
+            tableIns.on("tool", function (evt, obj) {
+                if (evt === "del") {
+                    if (window.confirm("确定删除[" + obj.data.name + "]吗？")) {
+                        $.post("delete_stock?id="+obj.data.id, function (data) {
+                            if (data != 0)
+                                alert("删除失败");
+                            else {
+                                window.location.reload();
+                            }
+                        });
                     }
                 }
             });
-
-            function getData() {
-                var arr = {% raw stocks %};
-            return arr;
         }
-                    }
-    </script>
-</head>
-<body>
-    <h3 class="vue-title">my stocks</h3>
-    <div id="app" class="container">
-        <v-client-table :columns="columns" :data="data" :options="options">
-            <div slot="beforeBody">
-                before body
-            </div>
-        </v-client-table>
-    </div>
-    <script>
-        // tell the embed parent frame the height of the content
-        if (window.parent && window.parent.parent) {
-            window.parent.parent.postMessage(["resultsFrame", {
-                height: document.body.getBoundingClientRect().height,
-                slug: "823jzuzc"
-            }], "*")
-        }
-
-        // always overwrite window.name, in case users try to set it manually
-        window.name = "result"
+        initRayTable();
     </script>
 </body>
 </html>
-
 

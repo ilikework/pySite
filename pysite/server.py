@@ -139,7 +139,7 @@ class stockHandler(tornado.web.RequestHandler):
     def get(self):
         stock_api = Stock()
         stocks = stock_api.get_stock_info()
-        print(stocks)
+        #print(stocks)
         self.render("stock.html",stocks=stocks)
 
 application = tornado.web.Application(
