@@ -11,6 +11,7 @@ import os.path
 import datetime
 import json
 from py.Stock import Stock
+from py.Recite import Recite
 
 class dbEngine():
 
@@ -142,6 +143,120 @@ class stockHandler(tornado.web.RequestHandler):
         #print(stocks)
         self.render("stock.html",stocks=stocks)
 
+class addStockHandler(tornado.web.RequestHandler):
+    def post(self):
+        code = self.get_argument('code')
+        stock_api = Stock()
+        if stock_api.add_stock(code,""):
+            stocks = stock_api.get_stock_info()
+            self.render("stock.html",stocks=stocks)
+
+class delStockHandler(tornado.web.RequestHandler):
+    def post(self):
+        id = self.get_argument('id')
+        stock_api = Stock()
+        if stock_api.delete_stock(id):
+            self.write("0")
+
+class reciteHandler(tornado.web.RequestHandler):
+    def get(self):
+        recite_api = Recite()
+        self.render("recite_user_login.html")
+
+    def post(self):
+        opt = self.get_argument('opt')
+        if opt=="login":
+            self.__doLogin()
+        elif opt=="select_book":
+            self.__doSelectBook()
+        elif opt=="add_word":
+            self.__doAddWord()
+        elif opt=="edit_word":
+            self.__doEditWord()
+        elif opt=="del_word":
+            self.__doDeleteWord()
+        elif opt=="recite_word":
+            self.__doReciteWord()
+        elif opt=="record_recite":
+            self.__doRecordRecite()
+
+    def __doLogin(self):
+        user = self.get_argument('user')
+        recite_api = Recite()
+        user_obj = recite_api.createUser(user) # if not exit, auto create.
+        books = recite_api.selectBooks()
+        self.render("recite_book_list.html",user=user_obj,books=books)
+
+    def __doSelectBook(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        words = recite_api.selectWords(bookId,userId)
+        self.render("recite_book.html",user=user,book=book,words=words)
+
+    def __doManagerWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+
+    def __doAddWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        word = self.get_argument('word')
+        meaning = self.get_argument('meaning')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        recite_api.createWord(bookId,word,meaning)
+        words = recite_api.selectWords(bookId,userId)
+        self.render("recite_book_list.html",user=user,book=book,words=words)
+
+    def __doEditWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        wordId = self.get_argument('wordId')
+        word = self.get_argument('word')
+        meaning = self.get_argument('meaning')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        recite_api.editWord(wordId,word,meaning)
+        words = recite_api.selectWords(bookId,userId)
+        self.render("recite_book_list.html",user=user,book=book,words=words)
+
+    def __doDeleteWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        wordId = self.get_argument('wordId')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        recite_api.delWord(wordId)
+        words = recite_api.selectWords(bookId,userId)
+        self.render("recite_book_list.html",user=user,book=book,words=words)
+
+    def __doReciteWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        words = recite_api.selectWords(bookId,userId)
+        self.render("recite_way1.html",user=user,book=book,words=words)
+
+    def __doRecordRecite(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        wordId = self.get_argument('wordId')
+        bCorrect = self.get_argument('bCorrect')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        recite_api.createReciteRecord(wordId,userId,bookId,bCorrect)
+        words = recite_api.selectWords(bookId,userId)
+        self.write("ok")
+
 application = tornado.web.Application(
     [
     (r"/", listNoteHandler),
@@ -151,7 +266,10 @@ application = tornado.web.Application(
     (r"/delete_note", delNoteHandler),
     (r"/testTable", testTableHandler),
     (r"/testTTS", testTTSHandler),
-    (r"/stock", stockHandler)
+    (r"/stock", stockHandler),
+    (r"/add_stock", addStockHandler),
+    (r"/delete_stock", delStockHandler),
+    (r"/recite", reciteHandler)
     ],
     template_path=os.path.join(os.getcwd(),  "templates"),
     static_path=os.path.join(os.getcwd(),  "static"),

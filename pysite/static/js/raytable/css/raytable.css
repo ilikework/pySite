@@ -11,9 +11,9 @@ a:active,a.visited {
 .rayui-btn, .rayui-input {
     border: 1px solid #e2e2e2;
     border-radius: 2px;
-    font-size: 14px;
+    font-size: 12px;
     display: inline-block;
-    margin: 5px 3px;
+    margin: 0px 3px;
     outline: none;
 }
 
@@ -28,7 +28,7 @@ a:active,a.visited {
 
 /* start 按钮组*/
 .rayui-btn {
-    padding: 3px 6px;
+    padding: 0px 6px;
     cursor: pointer;
     text-align: center;
     moz-user-select: -moz-none;
@@ -232,7 +232,7 @@ th[sort-type="desc"] .raytable-desc, th[sort-type="asc"] .raytable-asc {
     -webkit-box-sizing: border-box; /*Safari3.2+*/
     -o-box-sizing: border-box; /*Opera9.6*/
     -ms-box-sizing: border-box; /*IE8*/
-    padding: 9px 10px;
+    padding: 0px 10px;
     word-wrap: break-word;
     word-break: break-all;
     border: 0;
@@ -254,7 +254,7 @@ th[sort-type="desc"] .raytable-desc, th[sort-type="asc"] .raytable-asc {
 .raytable-box th.nowrap div, .raytable-box td.nowrap div {
     overflow: hidden;
     display: block;
-    padding: 9px 10px;
+    padding: 0px 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
     box-sizing: border-box;

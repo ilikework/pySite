@@ -1,14 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>stock kanban</title>
     <link rel="stylesheet" href="{{ static_url("js/raytable/css/raytable.css") }}" />
-    <script src="{{ static_url("js/jquery-1.12.4.js") }}"></script>
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
     <script src="{{ static_url("js/raytable/raytable.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/jquery.validate.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/localization/messages_zh.js") }}"></script>
+    <script>
+        $.validator.setDefaults({
+            submitHandler: function () {
+                alert("提交!");
+                form.submit();
+            }
+        });
+        $().ready(function () {
+            $("#form").validate();
+        });
+    </script>
     <style>
         html, body {
-            height: 100%;
+            height: 80%;
             width: 100%;
             padding: 0;
             margin: 0;
@@ -23,11 +36,11 @@
      <div class="head">
          股票看板
     </div>
-    <form action="/add_stock" method="post" id="form">
-        <label class="label">股票代码:</label>
-        <input type="text" name="code" id="code" required />
-        <button  name="add" id="btnAdd"  onclick="goAdd()" >添加关注</button><br/>
-    </form>
+     <form action="/add_stock" method="post" id="form">
+         <label class="label">股票代码:</label>
+         <input type="text" name="code" id="code" required />
+         <input type="submit" name="subMit" id="forSub" value="添加关注" />
+     </form>
     <table id="table"></table>
     <div class="footer">
         copyright iLikework 2019.10
@@ -37,27 +50,35 @@
             var text = {% raw stocks %};
             var tableIns = $("#table").rayTable({
                 data: text, 
-                height: 'full-60',
+                height: 'full',
+                minHeight : '10',
                 //page: true,
                 page: {limit : 25},
                 cols: [[
-                    { field: 'no', title: 'No.', align: 'center', sort:true, width: 50, resize: true },
-                    { field: 'name', title: 'Name', align: 'left', sort:true, width:100, resize: true },
-                    { field: 'price', title: '当前价格', align: 'left', sort:true, width:100,  resize: true },
-                    { field: 'rise', title: '涨跌', align: 'left', sort:true, width:100, resize: true },
-                    { field: 'rise_persent', title: '涨跌幅', align: 'left', sort:true, width:100, resize: true },
-                    { field: 'amount', title: '成交量', align: 'left', sort:true, width:100, resize: true },
-                    { field: 'sum', title: '成交金额(万)', align: 'left', sort:true, width:100, resize: true },
-                    { field: 'opts', title: '操作', width: 60, align: 'center', resize: true, formatter: function () {
-                            return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>';
+                    { field: 'no', title: 'No.', align: 'center', sort:true, width: 50, style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'name', title: 'Name', align: 'left', sort:true, width:100,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'price', title: '当前价格', align: 'left', sort:true, width:100,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'rise', title: '涨跌', align: 'left', sort:true, width:100,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'rise_persent', title: '涨跌幅', align: 'left', sort:true, width:100,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'amount', title: '成交量', align: 'left', sort:true, width:100,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'sum', title: '成交金额(万)', align: 'left', sort:true, width:120,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, resize: true },
+                    { field: 'opts', title: '操作', width: 80,style: { "font-size": "12px" },dataStyle:{ "font-size": "12px" }, align: 'center', resize: true, formatter: function () {
+                            return '<a class="rayui-btn rayui-btn-danger" event="del" >删除</a>';
                         }
-                    }                    
+                    }
                 ]]
             });
             
             tableIns.on("tool", function (evt, obj) {
                 if (evt === "del") {
-                    if (window.confirm("确定删除[" + obj.data.name + "]吗？")) {
+                    var regExp = /<.*>(.*)<.*>/;
+                    var find = regExp.exec(obj.data.name);
+                    var name;
+                    if (find === null)
+                        name = obj.data.name;
+                    else
+                        name = find[1];
+                    if (window.confirm("确定删除[" + name + "]吗？")) {
                         $.post("delete_stock?id="+obj.data.id, function (data) {
                             if (data != 0)
                                 alert("删除失败");

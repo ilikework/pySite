@@ -468,7 +468,8 @@
 
             if (type === 1 && options.loading && options.url) {
                 $('<div class="raytable-loading"/>')
-                    .css({ "width": $tbox.width() + "px", "height": $tbox.height() + "px" })
+                    //.css({ "width": $tbox.width() + "px", "height": $tbox.height() + "px" })
+                    .css({ "width": $tbox.width() + "px" })
                     .appendTo($tbox);
             }
         },
@@ -546,12 +547,12 @@
                     var objClone;
                     if (fixed === 'left') {
                         leftTop === -1000 && (leftTop = $(this).offset().top);
-                        if (!isInsertL) { isInsertL = true; htmlL.push('<tr style="height:' + $trobj.height() + 'px">'); }
+                        if (!isInsertL) { isInsertL = true; /*htmlL.push('<tr style="height:' + $trobj.height() + 'px">');*/ }
                         objClone = $(this).clone();
                         htmlL.push(objClone[0].outerHTML);
                     } else if (fixed === 'right') {
                         rightTop === -1000 && (rightTop = $(this).offset().top);
-                        if (!isInsertR) { isInsertR = true; htmlR.push('<tr style="height:' + $trobj.height() + 'px">'); }
+                        if (!isInsertR) { isInsertR = true; /*htmlR.push('<tr style="height:' + $trobj.height() + 'px">');*/ }
                         objClone = $(this).clone();
                         htmlR.push(objClone[0].outerHTML);
                     }
@@ -571,7 +572,7 @@
                 //右侧宽度滚动条问题
                 jqobjs.tb_fixed_r.css("right", scrollGap.width + "px");
                 jqobjs.tb_box.find(".raytable-fixed-amend")
-                    .height($headFixedR.height() - 1)//1:自己下边框
+                    //.height($headFixedR.height() - 1)//1:自己下边框
                     .css("top", (rightTop - tbTop - 2) + "px") //2:自己和td的border
                     .css("right", scrollGap.width - 49 + "px"); //amend宽度50，减去自己的左边框1px
             }
@@ -688,11 +689,13 @@
                 $tr.appendTo($tbody);
                 //首次复制数据设置行高度
                 if (trs_fixed_l_one.length > 0) {
-                    trs_fixed_l.push('<tr data-index=' + a + ' style="height:' + $tr.height() + 'px">' + trs_fixed_l_one.join('') + "</tr>");
+                    //trs_fixed_l.push('<tr data-index=' + a + ' style="height:' + $tr.height() + 'px">' + trs_fixed_l_one.join('') + "</tr>");
+                    trs_fixed_l.push('<tr data-index=' + a + ' >' + trs_fixed_l_one.join('') + "</tr>");
                     trs_fixed_l_one = [];
                 }
                 if (trs_fixed_r_one.length > 0) {
-                    trs_fixed_r.push('<tr data-index=' + a + ' style="height:' + $tr.height() + 'px">' + trs_fixed_r_one.join('') + "</tr>");
+                    //trs_fixed_r.push('<tr data-index=' + a + ' style="height:' + $tr.height() + 'px">' + trs_fixed_r_one.join('') + "</tr>");
+                    trs_fixed_r.push('<tr data-index=' + a + ' >' + trs_fixed_r_one.join('') + "</tr>");
                     trs_fixed_r_one = [];
                 }
                 //添加数据后
