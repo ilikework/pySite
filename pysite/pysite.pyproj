@@ -52,6 +52,7 @@
     <Folder Include="static\plugins\raytable\" />
     <Folder Include="static\plugins\raytable\images\" />
     <Folder Include="templates\" />
+    <Folder Include="templates\recite\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="static\js\jquery-1.12.4.js" />
@@ -192,12 +193,14 @@
     <Content Include="static\plugins\raytable\images\close.png" />
     <Content Include="static\plugins\raytable\images\loading.gif" />
     <Content Include="static\plugins\raytable\raytable.js" />
+    <Content Include="static\recite_style.css" />
     <Content Include="static\style.css" />
     <Content Include="templates\add_note.html" />
     <Content Include="templates\add_success.html" />
     <Content Include="templates\edit_note.html" />
     <Content Include="templates\list_note.html" />
-    <Content Include="templates\recite_user_login.html" />
+    <Content Include="templates\recite\recite_book_list.html" />
+    <Content Include="templates\recite\recite_user_login.html" />
     <Content Include="templates\stock.html" />
     <Content Include="templates\test_tts.html" />
   </ItemGroup>

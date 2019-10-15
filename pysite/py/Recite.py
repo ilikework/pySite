@@ -23,7 +23,8 @@ class dbReciteEngine():
         c.execute('create table words (id integer primary key, book_id integer, word text, meaning text, chgdate date)')
         c.execute('create table users (id integer primary key, user text, chgdate date)')
         c.execute('create table books (id integer primary key, book text, chgdate date)')
-        c.execute('create table recite_records (word_id integer primary key, user_id integer primary key, book_id integer, learn_count integer, correct_count integer, chgdate date)')
+        c.execute("create table recite_records (word_id integer not null ,user_id integer not null , book_id integer not null , learn_count integer, correct_count integer, chgdate date " \
+                  "primary key(word_id,user_id,book_id) )" )
         db.commit()
         db.close()
 
@@ -97,10 +98,10 @@ class dbReciteEngine():
     def selectUser(self,user):
         user_obj = None
         db =self.__get_db()
-        strsql = "select id, user,chgdate from users order by chgdate where user={}".format(user)
+        strsql = "select id, user,chgdate from users where user = '{}'".format(user)
         cursor = db.execute(strsql)
         for row in cursor.fetchall():
-            user_obj = {"id":row[0],"no":str(i),"user":row[1],"chgdate":row[2]}
+            user_obj = {"id":row[0],"user":row[1],"chgdate":row[2]}
             break
         db.close()
         return user_obj 
