@@ -1,8 +1,9 @@
 ﻿<!DOCTYPE html>
 
+<html>
 <head>
     <meta charset="utf-8" />
-    <title>进入Recite</title>
+    <title>新建单词本</title>
     <link rel="stylesheet" href="{{ static_url("recite_style.css") }}" />
     <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
     <script src="{{ static_url("js/jquery-validation-1.19.1/dist/jquery.validate.js") }}"></script>
@@ -17,20 +18,20 @@
             $("#form").validate();
         });
     </script>
-
 </head>
-<body >
-    <div class="centering_parent" >
-        <div class="centering_item" >
+<body>
+    <div class="centering_parent">
+        <div class="centering_item">
             <form action="/recite" method="post" id="form">
-                <input type="hidden" name="opt" id="opt" value="login" />
-                <label class="label">用户名:</label><br>
-                <input type="text" name="user" id="user" required /><br>
+                <input type="hidden" name="opt" id="opt" value="add_book" />
+                <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
+                <label class="label">单词本:</label><br>
+                <input type="text" name="book" id="book" required /><br>
                 <div align="center">
-                    <input type="submit" name="subMit" id="forSub" value="登入" />
+                    <input type="submit" name="subMit" id="forSub" value="提交" />
                 </div>
             </form>
-        </div >
-    </div >
-</body >
-</html >
+        </div>
+    </div>
+</body>
+</html>

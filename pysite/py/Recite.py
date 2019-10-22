@@ -23,7 +23,7 @@ class dbReciteEngine():
         c.execute('create table words (id integer primary key, book_id integer, word text, meaning text, chgdate date)')
         c.execute('create table users (id integer primary key, user text, chgdate date)')
         c.execute('create table books (id integer primary key, book text, chgdate date)')
-        c.execute("create table recite_records (word_id integer not null ,user_id integer not null , book_id integer not null , learn_count integer, correct_count integer, chgdate date " \
+        c.execute("create table recite_records (word_id integer not null ,user_id integer not null , book_id integer not null , learn_count integer, correct_count integer, chgdate date, " \
                   "primary key(word_id,user_id,book_id) )" )
         db.commit()
         db.close()
@@ -86,10 +86,10 @@ class dbReciteEngine():
     def selectUserById(self,id):
         user_obj = None
         db =self.__get_db()
-        strsql = "select id, user,chgdate from users order by chgdate where id={}".format(id)
+        strsql = "select id, user,chgdate from users where id={}".format(id)
         cursor = db.execute(strsql)
         for row in cursor.fetchall():
-            user_obj = {"id":row[0],"no":str(i),"user":row[1],"chgdate":row[2]}
+            user_obj = {"id":row[0],"user":row[1],"chgdate":row[2]}
             break
         db.close()
         return user_obj 
@@ -177,7 +177,7 @@ class dbReciteEngine():
         strsql = "select id, book,chgdate from books where id = {}".format(id)
         cursor = db.execute(strsql)
         for row in cursor.fetchall():
-            book = {"id":row[0],"no":str(i),"book":row[1],"chgdate":row[2]}
+            book = {"id":row[0],"book":row[1],"chgdate":row[2]}
             break
         db.close()
         return book
@@ -223,15 +223,17 @@ class dbReciteEngine():
         db =self.__get_db()
         if self.isExitWord(bookId,word):
             return False
-        strsql = "insert into words(book_id, word,meaning,chgdate)  values('{}','{}')".format(bookId,word,meaning,self.__get_now_string())
+        strsql = "insert into words(book_id, word,meaning,chgdate)  values('{}','{}','{}','{}')".format(bookId,word,meaning,self.__get_now_string())
         db.execute(strsql)
         db.commit()
         db.close()
         return True
 
-    def editWord(self,id,word,meaning):
+    def editWord(self,bookId,wordId,word,meaning):
+        if self.isExitWordExpectMe(bookId,wordId,word):
+            return False
         db =self.__get_db()
-        strsql = "update words set word = '{}' , meaning = '{}',chgdate = '{}' where id={}".format(word,meaning,self.__get_now_string(),id)
+        strsql = "update words set word = '{}' , meaning = '{}',chgdate = '{}' where id={}".format(word,meaning,self.__get_now_string(),wordId)
         db.execute(strsql)
         db.commit()
         db.close()
@@ -247,7 +249,7 @@ class dbReciteEngine():
         return False
 
     def isExitWord(self,bookId,word):
-        if self.isExitBookID(bookId):
+        if not self.isExitBookID(bookId):
             return False
         db =self.__get_db()
         strsql = "select count(1) from words where book_id = {} and word='{}'".format(bookId,word)
@@ -257,10 +259,21 @@ class dbReciteEngine():
                 return True
         return False
 
+    def isExitWordExpectMe(self,bookId,wordId,word):
+        if not self.isExitBookID(bookId):
+            return False
+        db =self.__get_db()
+        strsql = "select count(1) from words where book_id = {} and word='{}' and id <>{} ".format(bookId,word,wordId)
+        cursor = db.execute(strsql)
+        for row in cursor.fetchall():
+            if int(row[0])>0:
+                return True
+        return False
+
     def delWord(self,id):
         db =self.__get_db()
         # delete from recite_records 
-        strsql = "delete from recite_records where wordid = {}".format(id)
+        strsql = "delete from recite_records where word_id = {}".format(id)
         db.execute(strsql)
 
         # delete from words
@@ -273,20 +286,20 @@ class dbReciteEngine():
 
     def selectWords(self,bookId):
         db =self.__get_db()
-        strsql = "select id, word,meaning from words where book_id = '{}' order by id".format(bookId)
+        strsql = "select id, word,meaning,chgdate from words where book_id = '{}' order by id".format(bookId)
         cursor = db.execute(strsql)
         words = []
         i = 0
         for row in cursor.fetchall():
             i +=1
-            word = {"id":row[0],"no":str(i),"word":row[1],"meaning":row[2] }
+            word = {"id":row[0],"no":str(i),"word":row[1],"meaning":row[2],"chgdate":row[3] }
             words.append(word)
         db.close()
         return words
 
     def selectWords(self,bookId,userId):
         db =self.__get_db()
-        strsql = "select a.id, a.word,a.meaning,ifnull(b.learn_count,0),ifnull(b.correct_count,0) " \
+        strsql = "select a.id, a.word,a.meaning,ifnull(b.learn_count,0),ifnull(b.correct_count,0),a.chgdate " \
                 " from words a left outer join recite_records b ON  a.id=b.word_id and b.user_id = '{}' and a.book_id = b.book_id " \
                 " where a.book_id = '{}' order by a.id".format(bookId,userId)
         cursor = db.execute(strsql)
@@ -294,14 +307,14 @@ class dbReciteEngine():
         i = 0
         for row in cursor.fetchall():
             i +=1
-            word = {"id":row[0],"no":str(i),"word":row[1],"meaning":row[2], "learn_count":row[3], "correct_count":row[4]}
+            word = {"id":row[0],"no":str(i),"word":row[1],"meaning":row[2], "learn_count":row[3], "correct_count":row[4],"chgdate":row[5]}
             words.append(word)
         db.close()
         return words
 
     def selectWord(self,wordId):
         db =self.__get_db()
-        strsql = "select id, word,meaning where id = {}".format(wordId)  
+        strsql = "select id, word,meaning from words where id = {}".format(wordId)  
         cursor = db.execute(strsql)
         word = {}
         for row in cursor.fetchall():
@@ -311,33 +324,33 @@ class dbReciteEngine():
         return word
 
     def addReciteRecord(self,wordId,userId,bookId,bCorrect):
-        if self.isExitUserId(userId):
+        if not self.isExitUserId(userId):
             return False
-        if self.isExitBookID(bookId):
+        if not self.isExitBookID(bookId):
             return False
-        if self.isExitWordId(wordId):
+        if not self.isExitWordId(wordId):
             return False
         db =self.__get_db()
-        bExit = false
+        bExist = False
         strsql = "select count(1) from recite_records where word_id = {} and user_id = {} and book_id = {} ".format(wordId,userId,bookId)
         cursor = db.execute(strsql)
         for row in cursor.fetchall():
             if int(row[0])>0:
-                bExit = true
+                bExist = True
                 break
 
-        if bExit:
-            str1 = "learn_count = learn_count +1"
-            str2 = ""
+        if bExist:
+            str = "learn_count = learn_count +1"
             if bCorrect:
-                str2 = "correct_count = correct_count + 1"
-            strsql = "update recite_records set {}, {} where word_id = {} and user_id = {} and book_id = {} ".format(str1,str2)
+                str = str + ", correct_count = correct_count + 1"
+
+            strsql = "update recite_records set {} where word_id = {} and user_id = {} and book_id = {} ".format(str,wordId,userId,bookId)
         else:
             learn_count = 1
             correct_count = 0
             if bCorrect:
                 correct_count = 1
-            strsql = " insert into recite_records(word_id,user_id,book_id,learn_cout,correct_count,chgdate) " \
+            strsql = " insert into recite_records(word_id,user_id,book_id,learn_count,correct_count,chgdate) " \
                      " values('{}','{}','{}','{}','{}','{}')".format(wordId,userId,bookId,learn_count,correct_count,self.__get_now_string())
         db.execute(strsql)
         db.commit()
@@ -421,9 +434,13 @@ class Recite(object):
         db =dbReciteEngine()
         return db.addWord(bookId,word,meaning)
 
-    def editWord(self,wordId,word,meaning):
+    def selectWord(self,wordId):
+        db = dbReciteEngine()
+        return db.selectWord(wordId)
+
+    def editWord(self,bookId,wordId,word,meaning):
         db =dbReciteEngine()
-        return db.editWord(wordId,word,meaning)
+        return db.editWord(bookId,wordId,word,meaning)
 
     def selectWords(self,bookId,userId):
         db = dbReciteEngine()

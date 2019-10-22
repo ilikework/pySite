@@ -173,14 +173,22 @@ class reciteHandler(tornado.web.RequestHandler):
             self.__showAddBook()
         elif opt=="show_edit_book":
             self.__showEditBook()
+        elif opt=="add_book":
+            self.__doAddBook()
+        elif opt=="edit_book":
+            self.__doEditBook()
+        elif opt=="show_add_word":
+            self.__showAddWord()
+        elif opt=="show_edit_word":
+            self.__showEditWord()
         elif opt=="add_word":
             self.__doAddWord()
         elif opt=="edit_word":
             self.__doEditWord()
         elif opt=="del_word":
             self.__doDeleteWord()
-        elif opt=="recite_word":
-            self.__doReciteWord()
+        elif opt=="recite_word1":
+            self.__doReciteWord1()
         elif opt=="record_recite":
             self.__doRecordRecite()
 
@@ -195,7 +203,7 @@ class reciteHandler(tornado.web.RequestHandler):
         userId = self.get_argument('userId')
         recite_api = Recite()
         user = recite_api.selectUser(userId)
-        self.render("recite_add_book.html",user=user)
+        self.render("recite/recite_book_add.html",user=user)
 
     def __showEditBook(self):
         userId = self.get_argument('userId')
@@ -204,6 +212,25 @@ class reciteHandler(tornado.web.RequestHandler):
         user = recite_api.selectUser(userId)
         book = recite_api.selectBook(bookId)
         self.render("recite/recite_edit_book.html",user=user,book=book)
+
+    def __doAddBook(self):
+        userId = self.get_argument('userId')
+        book = self.get_argument('book')
+        recite_api = Recite()
+        if recite_api.createBook(book):
+            user = recite_api.selectUser(userId)
+            books = recite_api.selectBooks()
+            self.render("recite/recite_book_list.html",user=user,books=books)
+
+    def __doEditBook(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        book = self.get_argument('book')
+        recite_api = Recite()
+        if recite_api.editBook(bookId,book):
+            user = recite_api.selectUser(userId)
+            books = recite_api.selectBooks(_)
+            self.render("recite/recite_book_list.html",user=user,books=books)
 
     def __selectBook(self):
         userId = self.get_argument('userId')
@@ -218,6 +245,24 @@ class reciteHandler(tornado.web.RequestHandler):
         userId = self.get_argument('userId')
         bookId = self.get_argument('bookId')
 
+    def __showAddWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        self.render("recite/recite_word_add.html",user=user,book=book)
+
+    def __showEditWord(self):
+        userId = self.get_argument('userId')
+        bookId = self.get_argument('bookId')
+        wordId = self.get_argument('wordId')
+        recite_api = Recite()
+        user = recite_api.selectUser(userId)
+        book = recite_api.selectBook(bookId)
+        word = recite_api.selectWord(wordId)
+        self.render("recite/recite_word_edit.html",user=user,book=book,word=word)
+
     def __doAddWord(self):
         userId = self.get_argument('userId')
         bookId = self.get_argument('bookId')
@@ -228,7 +273,7 @@ class reciteHandler(tornado.web.RequestHandler):
         book = recite_api.selectBook(bookId)
         recite_api.createWord(bookId,word,meaning)
         words = recite_api.selectWords(bookId,userId)
-        self.render("recite/recite_book_list.html",user=user,book=book,words=words)
+        self.render("recite/recite_book.html",user=user,book=book,words=words)
 
     def __doEditWord(self):
         userId = self.get_argument('userId')
@@ -239,35 +284,39 @@ class reciteHandler(tornado.web.RequestHandler):
         recite_api = Recite()
         user = recite_api.selectUser(userId)
         book = recite_api.selectBook(bookId)
-        recite_api.editWord(wordId,word,meaning)
+        recite_api.editWord(bookId,wordId,word,meaning)
         words = recite_api.selectWords(bookId,userId)
-        self.render("recite/recite_book_list.html",user=user,book=book,words=words)
+        self.render("recite/recite_book.html",user=user,book=book,words=words)
 
     def __doDeleteWord(self):
         userId = self.get_argument('userId')
         bookId = self.get_argument('bookId')
         wordId = self.get_argument('wordId')
         recite_api = Recite()
-        user = recite_api.selectUser(userId)
-        book = recite_api.selectBook(bookId)
-        recite_api.delWord(wordId)
-        words = recite_api.selectWords(bookId,userId)
-        self.render("recite/recite_book_list.html",user=user,book=book,words=words)
+        if recite_api.delWord(wordId):
+            self.write("0")
 
-    def __doReciteWord(self):
+    def __doReciteWord1(self):
         userId = self.get_argument('userId')
         bookId = self.get_argument('bookId')
         recite_api = Recite()
         user = recite_api.selectUser(userId)
         book = recite_api.selectBook(bookId)
         words = recite_api.selectWords(bookId,userId)
-        self.render("recite/recite_way1.html",user=user,book=book,words=words)
+        if len(words)<=4:
+            #
+            self.write("1")
+        else:
+            self.render("recite/recite_way1.html",user=user,book=book,words=words)
 
     def __doRecordRecite(self):
         userId = self.get_argument('userId')
         bookId = self.get_argument('bookId')
         wordId = self.get_argument('wordId')
-        bCorrect = self.get_argument('bCorrect')
+        strCorrect = self.get_argument('bCorrect')
+        bCorrect = False
+        if strCorrect.lower()=="true":
+            bCorrect = True
         recite_api = Recite()
         user = recite_api.selectUser(userId)
         book = recite_api.selectBook(bookId)

@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>背单词</title>
+    <link rel="stylesheet" href="{{ static_url("recite_style.css") }}" />
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
+</head>
+<body>
+    <div class="centering_parent">
+        <div class="centering_item">
+            <form action="/recite" method="post" id="form">
+                <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
+                <input type="hidden" name="opt" id="opt" value="" />
+                <input type="hidden" name="bookId" id="bookId" value="{{book["id"]}}" />
+                <label class="label" name="question" id="question">单词:</label><br>
+                <button type="button" class="button_recite_style" name="choice1" id="choice1" onclick="checkAnswer(0)" width="300">1</button><br /><br />
+                <button type="button" class="button_recite_style" name="choice2" id="choice2" onclick="checkAnswer(1)" width="300">2</button><br /><br />
+                <button type="button" class="button_recite_style" name="choice3" id="choice3" onclick="checkAnswer(2)" width="300">3</button><br /><br />
+                <button type="button" class="button_recite_style" name="choice4" id="choice4" onclick="checkAnswer(3)" width="300">4</button><br /><br />
+                <hr>
+                <label name="answer" id="answer">           </label><br/>
+                <button type="button" name="next" id="next" onclick="goNext()" width="100">Next</button>
+            </form>
+        </div>
+        <button type="button" name="end" id="end" onclick="goEnd()" >结束返回</button>
+    </div>
+    <script>
+        var nIndex = 0;
+        var words = {% raw words %};
+        var nCorrect = 0;
+        var nAnswers = [-1,-1,-1,-1];
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        function createQuestion() {
+            nAnswers = [-1, -1, -1, -1];
+            if (nIndex >= 0 && nIndex < words.length) {
+                $("#question").text(words[nIndex]['word']);
+                nCorrect = getRandomInt(4);
+                nAnswers[nCorrect] = nIndex;
+                for (var i = 0; i < 4; i++) {
+                    if (i == nCorrect) {
+                        continue;
+                    }
+                    nAnswers[i] = getAnswer(nAnswers);
+                }
+
+                $("#choice1").text("1:" + words[nAnswers[0]]['meaning']);
+                //$("#choice1").width(300);
+                $("#choice2").text("2:" + words[nAnswers[1]]['meaning']);
+                //$("#choice2").width(300);
+                $("#choice3").text("3:" + words[nAnswers[2]]['meaning']);
+                //$("#choice3").width(300);
+                $("#choice4").text("4:" + words[nAnswers[3]]['meaning']);
+                //$("#choice4").width(300);
+            }
+            else {
+                // test is ending.
+                goEnd();
+            }
+        }
+        function getAnswer(answers) {
+            n = getRandomInt(words.length);
+            for (var i = 0; i < answers.length; i++) {
+                if (n == answers[i]) {
+                    return getAnswer(answers);
+                }
+            }
+            return n;
+        }
+        function checkAnswer(input) {
+            var bCorrect = false;
+            if (input == nCorrect) {
+                bCorrect = true;
+            }
+            var wordId = words[nIndex]['id'];
+            // post to server the test record.
+            $.post("/recite?opt=record_recite&userId={{user['id']}}&bookId={{book['id']}}&wordId=" + wordId + "&bCorrect=" + bCorrect,
+                function (data) {
+                    if (data != "ok")
+                        alert("save record失败");
+                    else {
+                    }
+                    showCorrect(bCorrect);
+
+            });
+
+        }
+        function showCorrect(bCorrect) {
+            if (bCorrect) {
+                $("#answer").css("color", "green");
+                $("#answer").text("答对！")
+            }
+            else {
+                $("#answer").css("color", "red");
+                n = nCorrect + 1;
+                $("#answer").text("答错！正确选择为：【" + n + "】");
+            }
+            
+        }
+        function goNext() {
+             $("#answer").text("       ");
+            nIndex++;
+            createQuestion();
+        }
+        function goEnd() {
+            $("#opt").val("select_book");
+            $("#form").submit();
+
+        }
+        createQuestion();
+    </script>
+</body>
+</html>

@@ -16,8 +16,9 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>pysite</Name>
     <RootNamespace>pysite</RootNamespace>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
     <CommandLineArguments>-p 1008</CommandLineArguments>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -199,8 +200,14 @@
     <Content Include="templates\add_success.html" />
     <Content Include="templates\edit_note.html" />
     <Content Include="templates\list_note.html" />
+    <Content Include="templates\recite\recite_book.html" />
+    <Content Include="templates\recite\recite_book_add.html" />
+    <Content Include="templates\recite\recite_book_edit.html" />
     <Content Include="templates\recite\recite_book_list.html" />
     <Content Include="templates\recite\recite_user_login.html" />
+    <Content Include="templates\recite\recite_way1.html" />
+    <Content Include="templates\recite\recite_word_add.html" />
+    <Content Include="templates\recite\recite_word_edit.html" />
     <Content Include="templates\stock.html" />
     <Content Include="templates\test_tts.html" />
   </ItemGroup>

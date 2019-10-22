@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{{ static_url("js/raytable/css/raytable.css") }}" />
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
+    <script src="{{ static_url("js/raytable/raytable.js") }}"></script>
+    <title>单词表</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="head">
+        单词表
+    </div>
+    <form action="/recite" method="post" id="form">
+
+        <div class="widget">
+            <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
+            <input type="hidden" name="opt" id="opt" value="" />
+            <input type="hidden" name="bookId" id="bookId" value="{{book["id"]}}" />
+            <input type="hidden" name="wordId" id="wordId" value="" />
+            <button name="add" id="btnAdd" onclick="goAdd()">新建单词</button>&nbsp;
+            <button name="btnRecite" id="btnRecite" onclick="goRecite()">背单词</button><br />
+        </div>
+        <table id="table"></table>
+    </form>
+    <div class="footer">
+        copyright iLikework 2019.10
+    </div>
+    <script>
+        function initRayTable() {
+            var text = {% raw words %};
+        var tableIns = $("#table").rayTable({
+            data: text,
+            height: 'full-100',
+            page: true,
+            cols: [[
+                { field: 'no', title: '序号', align: 'center', width: 50, resize: true },
+                { field: 'word', title: '单词', align: 'left', width: 200, resize: true },
+                { field: 'meaning', title: '词意', align: 'left', width: 600, resize: true },
+                { field: 'chgdate', title: '更新时间', align: 'left', width: 200, resize: true },
+                {
+                    field: 'opts', title: '操作', width: 150, align: 'center', resize: true, formatter: function () {
+                        return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>&nbsp;<a class="rayui-btn rayui-btn-success" event="edit">编辑</a>';
+                    }
+                }
+            ]]
+        });
+
+        tableIns.on("tool", function (evt, obj) {
+            if (evt === "del") {
+                if (window.confirm("确定删除[" + obj.data.word + "]吗？")) {
+                    $.post("recite?opt=del_word&userId={{user['id']}}&bookId={{book['id']}}&wordId=" + obj.data.id, function (data) {
+                        if (data != 0)
+                            alert("删除失败");
+                        else {
+                            window.location.reload();
+                        }
+                    });
+                }
+            } else if (evt === "edit") {
+                $("#opt").val("show_edit_word");
+                $("#wordId").val(obj.data.id);
+                $("#form").submit();
+            }
+        });
+            }
+        initRayTable();
+
+        var goAdd = function () {
+            $("#opt").val("show_add_word");
+            $("#form").submit();
+        }
+
+        var goRecite = function () {
+            $("#opt").val("recite_word1");
+            $("#form").submit();
+        }
+
+    </script>
+</body>
+</html>

@@ -24,11 +24,16 @@
     <div class="head">
         单词本一览
     </div>
-    <div class="widget">
-        <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
-        <button name="add" id="btnAdd" onclick="goAdd()">新建单词本</button><br />
-    </div>
-    <table id="table"></table>
+    <form action="/recite" method="post" id="form">
+
+        <div class="widget">
+            <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
+            <input type="hidden" name="opt" id="opt" value="" />
+            <input type="hidden" name="bookId" id="bookId" value="" />
+            <button name="add" id="btnAdd" onclick="goAdd()">新建单词本</button><br />
+        </div>
+        <table id="table"></table>
+    </form>
     <div class="footer">
         copyright iLikework 2019.10
     </div>
@@ -43,8 +48,8 @@
                     { field: 'no', title: '序号', align: 'center', width: 50, resize: true },
                     { field: 'name', title: '单词本', align: 'left', width:200, resize: true },
                     { field: 'chgdate', title: '更新时间', align: 'left',width:200, resize: true },
-                    { field: 'opts', title: '操作', width: 120, align: 'center', resize: true, formatter: function () {
-                            return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>&nbsp;<a class="rayui-btn rayui-btn-success" event="edit">编辑</a>&nbsp;<a class="rayui-btn rayui-btn-success" event="enter">进入</a>';
+                    { field: 'opts', title: '操作', width: 150, align: 'center', resize: true, formatter: function () {
+                            return '<a class="rayui-btn rayui-btn-danger" event="del">删除</a>&nbsp;<a class="rayui-btn rayui-btn-success" event="edit">编辑</a>&nbsp;<a class="rayui-btn rayui-btn-info" event="enter">进入</a>';
                         }
                     }
                 ]]
@@ -62,18 +67,21 @@
                         });
                     }
                 } else if (evt === "edit") {
-                    $.post("/recite?opt=show_edit_book&userId=" + $("#userId") + "&bookId=" + obj.data.id,function(data) {
-                    });
-                } else if (evt === "edit") {
-                    $.post("/recite?opt=select_book&userId=" +  $("#userId") + "&bookId=" + obj.data.id, function (data) {
-                    });
+                    $("#opt").val("show_edit_book");
+                    $("#bookId").val(obj.data.id);
+                    $("#form").submit();
+                } else if (evt === "enter") {
+                    $("#opt").val("select_book");
+                    $("#bookId").val(obj.data.id);
+                    $("#form").submit();
                 }
             });
         }
         initRayTable();
 
-        var goAdd = function() {
-            $.post("/recite?opt=show_add_book&userId=" + userId, function (data) { });
+        var goAdd = function () {
+            $("#opt").val("show_add_book");
+            $("#form").submit();
         }
 
     </script>

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>编辑单词</title>
+    <link rel="stylesheet" href="{{ static_url("recite_style.css") }}" />
+    <script src="{{ static_url("js/jquery-3.4.1.min.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/jquery.validate.js") }}"></script>
+    <script src="{{ static_url("js/jquery-validation-1.19.1/dist/localization/messages_zh.js") }}"></script>
+    <script>
+        $.validator.setDefaults({
+            submitHandler: function () {
+                form.submit();
+            }
+        });
+        $().ready(function () {
+            $("#form").validate();
+        });
+    </script>
+</head>
+<body>
+    <div class="centering_parent">
+        <div class="centering_item">
+            <form action="/recite" method="post" id="form">
+                <input type="hidden" name="opt" id="opt" value="edit_word" />
+                <input type="hidden" name="userId" id="userId" value="{{user["id"]}}" />
+                <input type="hidden" name="bookId" id="bookId" value="{{book["id"]}}" />
+                <input type="hidden" name="wordId" id="bookId" value="{{word["id"]}}" />
+                <label class="label">单词:</label><br>
+                <input type="text" name="word" id="word" value="{{word["word"]}}" required /><br>
+                <label class="label">词意:</label><br>
+                <textarea cols="40" rows="4" name="meaning" id="meaning" required>{{word["meaning"]}}</textarea><br>
+                <div align="center">
+                    <input type="submit" name="subMit" id="forSub" value="提交" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -14,3 +14,7 @@
     transform: translateY(-50%) translateX(-50%); /* 要素自体の半分、上と左にずらす */
     padding: 20px; /* 余白指定 */
 }
+.button_recite_style {
+    text-align: left;
+    width: 251px;
+}
