@@ -301,7 +301,7 @@ class dbReciteEngine():
         db =self.__get_db()
         strsql = "select a.id, a.word,a.meaning,ifnull(b.learn_count,0),ifnull(b.correct_count,0),a.chgdate " \
                 " from words a left outer join recite_records b ON  a.id=b.word_id and b.user_id = '{}' and a.book_id = b.book_id " \
-                " where a.book_id = '{}' order by a.id".format(bookId,userId)
+                " where a.book_id = '{}' order by a.id".format(userId,bookId)
         cursor = db.execute(strsql)
         words = []
         i = 0

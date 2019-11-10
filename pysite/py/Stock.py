@@ -132,6 +132,7 @@ class Stock(object):
         db = dbStockEngine()
         stocks = db.delStock(id)
         return True
+
 #print(type(response)) # <class 'requests.models.Response'>
 #print(response.status_code) # 200
 #print(type(response.text)) # <class 'str'>

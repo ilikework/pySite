@@ -16,9 +16,10 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>pysite</Name>
     <RootNamespace>pysite</RootNamespace>
-    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <CommandLineArguments>-p 1008</CommandLineArguments>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <WebBrowserPort>1008</WebBrowserPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
